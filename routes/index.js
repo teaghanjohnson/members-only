@@ -2,6 +2,7 @@ const router = require("express").Router();
 const passport = require("passport");
 const { genPassword } = require("../lib/passwordUtils");
 const db = require("../db/queries");
+const { isMember } = require("./authMiddleware.js");
 
 router.get("/", (req, res) => {
   res.render("index", { user: req.user });
@@ -41,4 +42,29 @@ router.get("/log-out", (req, res, next) => {
   });
 });
 
+/**
+ * Member login (protected routes) Routes - handling when log-ins are members
+ */
+
+router.get("/protected-route", isAuth, (req, res, next) => {
+  res.send("You made it to the route");
+});
+router.get("/member-route", isMember, (req, res, next) => {
+  res.send("You made it to the route");
+});
+
+router.get("/logout", (req, res, next) => {
+  req.logout();
+  res.redirect("/protected-route");
+});
+
+router.get("/login-success", (req, res, next) => {
+  res.send(
+    '<p>You successfully logged in. --> <a href="/protected-route">Go to protected route</a></p>',
+  );
+});
+
+router.get("/login-failure", (req, res, next) => {
+  res.send("You entered the wrong password");
+});
 module.exports = router;
