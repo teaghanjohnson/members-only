@@ -7,7 +7,7 @@ const SQL = `
     lastName VARCHAR(100),
     username VARCHAR(255)  UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    member BOOLEAN NOT NULL DEFAULT FALSE
+    member BOOLEAN NOT NULL DEFAULT TRUE
   )
 `;
 
