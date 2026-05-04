@@ -16,14 +16,13 @@ router.post("/sign-up", async (req, res, next) => {
       return res.render("signup", { error: "Username already taken." });
     }
     const hashedPassword = await genPassword(req.body.password);
-    const isMember = req.body.member === "yes";
-    await db.createUser(
-      req.body.firstName,
-      req.body.lastName,
-      req.body.username,
-      hashedPassword,
-      isMember,
-    );
+
+    await db.createUser({
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+      username: req.body.username,
+      passwordHash: hashedPassword,
+    });
     res.redirect("/log-in");
   } catch (error) {
     next(error);

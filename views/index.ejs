@@ -8,8 +8,8 @@
   <body>
     <h1 class="title">Internet 101</h1>
     <% if (user) { %>
-      <% if (user.member) { %>
-        <h1>WELCOME BACK MEMBER <%= user.firstname %></h1>
+      <% if (user.role === 'admin') { %>
+        <h1>WELCOME BACK ADMIN <%= user.first_name %></h1>
       <% } else { %>
         <h1>WELCOME BACK <%= user.username %></h1>
       <% } %>
