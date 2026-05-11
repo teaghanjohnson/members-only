@@ -3,11 +3,11 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Admin Dashboard</title>
   </head>
   <body>
-    <h1>You are successfully logged in</h1>
-    <p>Hooray</p>
-    <a href="/">Go back to Home page</a>
+    <h1>Welcome back, <%= user.first_name %> <%= user.last_name %>!</h1>
+    <p>You are logged in as an admin.</p>
+    <a href="/log-out">Log Out</a>
   </body>
 </html>
