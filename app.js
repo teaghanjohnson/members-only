@@ -1,16 +1,5 @@
 require("dotenv").config();
 
-<<<<<<< HEAD
-=======
-if (!process.env.SESSION_SECRET) {
-  console.error("SESSION_SECRET is required. Generate one with:");
-  console.error(
-    "  node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
-  );
-  process.exit(1);
-}
-
->>>>>>> 509cdd9adfc726bf0b6cc6758d5dee5d4bcfcdb9
 const path = require("node:path");
 const express = require("express");
 const session = require("express-session");
@@ -86,17 +75,4 @@ app.use(passport.session());
 app.use("/", routes);
 
 const PORT = process.env.PORT || 3000;
-<<<<<<< HEAD
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
-
-app.post(
-  "/log-in",
-  passport.authenticate("local", {
-    successRedirect: "/",
-    failureRedirect: "/",
-    failureMessage: true,
-  }),
-);
-=======
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
->>>>>>> 509cdd9adfc726bf0b6cc6758d5dee5d4bcfcdb9

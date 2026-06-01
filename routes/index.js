@@ -2,14 +2,7 @@ const router = require("express").Router();
 const passport = require("passport");
 const { genPassword } = require("../lib/passwordUtils");
 const db = require("../db/queries");
-<<<<<<< HEAD
 const { isAdmin, isAuth } = require("./authMiddleware.js");
-const {
-  default: nextAppLoader,
-} = require("next/dist/build/webpack/loaders/next-app-loader/index.js");
-=======
-const { isAuth } = require("./authMiddleware.js");
->>>>>>> 509cdd9adfc726bf0b6cc6758d5dee5d4bcfcdb9
 
 router.get("/", (req, res) => {
   res.render("index", { user: req.user });
@@ -23,7 +16,6 @@ router.post("/sign-up", async (req, res, next) => {
       return res.render("signup", { error: "Username already taken." });
     }
     const hashedPassword = await genPassword(req.body.password);
-<<<<<<< HEAD
     const isAdmin = req.body.admin === "yes";
     await db.createUser(
       req.body.first_name,
@@ -32,15 +24,6 @@ router.post("/sign-up", async (req, res, next) => {
       hashedPassword,
       isAdmin,
     );
-=======
-
-    await db.createUser({
-      firstName: req.body.firstName,
-      lastName: req.body.lastName,
-      username: req.body.username,
-      passwordHash: hashedPassword,
-    });
->>>>>>> 509cdd9adfc726bf0b6cc6758d5dee5d4bcfcdb9
     res.redirect("/log-in");
   } catch (error) {
     next(error);
@@ -48,7 +31,6 @@ router.post("/sign-up", async (req, res, next) => {
 });
 
 router.get("/log-in", (_req, res) => res.render("log-in"));
-<<<<<<< HEAD
 router.post("/log-in", (req, res, next) => {
   passport.authenticate("local", (err, user) => {
     if (err) return next(err);
@@ -61,15 +43,6 @@ router.post("/log-in", (req, res, next) => {
     });
   })(req, res, next);
 });
-=======
-router.post(
-  "/log-in",
-  passport.authenticate("local", {
-    successRedirect: "/member-route",
-    failureRedirect: "/login-failure",
-  }),
-);
->>>>>>> 509cdd9adfc726bf0b6cc6758d5dee5d4bcfcdb9
 
 router.get("/log-out", (req, res, next) => {
   req.logout((err) => {
@@ -78,26 +51,12 @@ router.get("/log-out", (req, res, next) => {
   });
 });
 
-<<<<<<< HEAD
 router.get("/admin", isAdmin, (req, res) => {
   res.render("admin", { user: req.user });
 });
 
-router.get("/member", (req, res) => {
+router.get("/member", isAuth, (req, res) => {
   res.render("member", { user: req.user });
 });
-=======
-router.get("/member-route", isAuth, (req, res) => {
-  if (req.user.role === "admin") {
-    res.render("admin", { user: req.user });
-  } else {
-    res.render("member", { user: req.user });
-  }
-});
 
-router.get("/login-failure", (_req, res) => {
-  res.send("Incorrect username or password.");
-});
-
->>>>>>> 509cdd9adfc726bf0b6cc6758d5dee5d4bcfcdb9
 module.exports = router;
