@@ -2,7 +2,10 @@ const router = require("express").Router();
 const passport = require("passport");
 const { genPassword } = require("../lib/passwordUtils");
 const db = require("../db/queries");
-const { isMember, isAuth } = require("./authMiddleware.js");
+const { isAdmin, isAuth } = require("./authMiddleware.js");
+const {
+  default: nextAppLoader,
+} = require("next/dist/build/webpack/loaders/next-app-loader/index.js");
 
 router.get("/", (req, res) => {
   res.render("index", { user: req.user });
@@ -16,13 +19,13 @@ router.post("/sign-up", async (req, res, next) => {
       return res.render("signup", { error: "Username already taken." });
     }
     const hashedPassword = await genPassword(req.body.password);
-    const isMember = req.body.member === "yes";
+    const isAdmin = req.body.admin === "yes";
     await db.createUser(
-      req.body.firstName,
-      req.body.lastName,
+      req.body.first_name,
+      req.body.last_name,
       req.body.username,
       hashedPassword,
-      isMember,
+      isAdmin,
     );
     res.redirect("/log-in");
   } catch (error) {
@@ -31,13 +34,18 @@ router.post("/sign-up", async (req, res, next) => {
 });
 
 router.get("/log-in", (_req, res) => res.render("log-in"));
-router.post(
-  "/log-in",
-  passport.authenticate("local", {
-    successRedirect: "/login-success",
-    failureRedirect: "/login-failure",
-  }),
-);
+router.post("/log-in", (req, res, next) => {
+  passport.authenticate("local", (err, user) => {
+    if (err) return next(err);
+    if (!user) return res.redirect("/log-in");
+
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      if (user.is_admin) return res.redirect("/admin");
+      return res.redirect("/member");
+    });
+  })(req, res, next);
+});
 
 router.get("/log-out", (req, res, next) => {
   req.logout((err) => {
@@ -48,25 +56,11 @@ router.get("/log-out", (req, res, next) => {
   });
 });
 
-/**
- * AUTHENTICATION ROUTES
- * Member login (protected routes) Routes - handling when log-ins are members
- */
-
-router.get("/protected-route", isAuth, (req, res, next) => {
-  res.render("user");
-});
-router.get("/member-route", isMember, (req, res, next) => {
-  res.send("member");
+router.get("/admin", isAdmin, (req, res) => {
+  res.render("admin", { user: req.user });
 });
 
-router.get("/login-success", (req, res, next) => {
-  res.render("login-success");
-});
-
-router.get("/login-failure", (req, res, next) => {
-  res.send("You entered the wrong password");
+router.get("/member", (req, res) => {
+  res.render("member", { user: req.user });
 });
 module.exports = router;
-
-// after signing in show welcome back filtraded

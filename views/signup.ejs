@@ -10,17 +10,17 @@
       <p class="error"><%= error %></p>
     <% } %>
     <form action="/sign-up" method="POST">
-      <label for="firstName">First Name</label>
+      <label for="first_name">First Name</label>
       <input
-        id="firstName"
-        name="firstName"
+        id="first_name"
+        name="first_name"
         placeholder="first name"
         type="text"
       />
-      <label for="lastName">Last Name</label>
+      <label for="last_name">Last Name</label>
       <input
-        id="lastName"
-        name="lastName"
+        id="last_name"
+        name="last_name"
         placeholder="last name"
         type="text"
       />
@@ -28,8 +28,8 @@
       <input id="username" name="username" placeholder="username" type="text" />
       <label for="password">Password</label>
       <input id="password" name="password" type="password" />
-      <label for="member">Do you want to be a member?</label>
-      <select id="member" name="member">
+      <label for="admin">Do you want to be an admin?</label>
+      <select id="admin" name="admin">
         <option value="yes">Yes</option>
         <option value="no">No</option>
       </select>

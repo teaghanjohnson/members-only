@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const path = require("node:path");
 const express = require("express");
 const session = require("express-session");
@@ -62,3 +63,12 @@ app.use("/", routes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+
+app.post(
+  "/log-in",
+  passport.authenticate("local", {
+    successRedirect: "/",
+    failureRedirect: "/",
+    failureMessage: true,
+  }),
+);

@@ -6,6 +6,9 @@
     <title>Document</title>
   </head>
   <body>
-    <h1>Welcome back (user.username)</h1>
+    <h1>Welcome back <%= user.first_name %></h1>
+    <% if (locals.error) { %>
+      <p><%= error %></p>
+    <% } %>
   </body>
 </html>

@@ -3,11 +3,11 @@ require("dotenv").config();
 const SQL = `
   CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    firstName VARCHAR(100) NOT NULL,
-    lastName VARCHAR(100),
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100),
     username VARCHAR(255)  UNIQUE NOT NULL,
     password TEXT NOT NULL,
-    member BOOLEAN NOT NULL DEFAULT TRUE
+    is_admin BOOLEAN NOT NULL DEFAULT FALSE
   )
 `;
 
