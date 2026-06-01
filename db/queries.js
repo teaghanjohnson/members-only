@@ -18,6 +18,8 @@ async function createUser(firstName, lastName, username, password, isAdmin) {
 }
 
 async function getAllUsers() {
-  await pool.query("SELECT * FROM users");
+  const { rows } = await pool.query("SELECT * FROM users");
+  return rows;
 }
+
 module.exports = { getUserByUsername, getUserById, createUser, getAllUsers };

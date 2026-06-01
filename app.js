@@ -1,10 +1,23 @@
 require("dotenv").config();
 
+<<<<<<< HEAD
+=======
+if (!process.env.SESSION_SECRET) {
+  console.error("SESSION_SECRET is required. Generate one with:");
+  console.error(
+    "  node -e \"console.log(require('crypto').randomBytes(32).toString('hex'))\"",
+  );
+  process.exit(1);
+}
+
+>>>>>>> 509cdd9adfc726bf0b6cc6758d5dee5d4bcfcdb9
 const path = require("node:path");
 const express = require("express");
 const session = require("express-session");
+const PgSession = require("connect-pg-simple")(session);
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
+const pool = require("./db/pool");
 const { validPassword } = require("./lib/passwordUtils");
 const db = require("./db/queries");
 const routes = require("./routes/index.js");
@@ -44,24 +57,36 @@ const app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+const isProd = process.env.NODE_ENV === "production";
+
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "cats",
+    store: new PgSession({
+      pool,
+      tableName: "session",
+      createTableIfMissing: false,
+    }),
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: "lax",
+      maxAge: 1000 * 60 * 60 * 24 * 7,
+    },
   }),
 );
+
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.urlencoded({ extended: false }));
-app.use((req, res, next) => {
-  res.locals.currentUser = req.user;
-  next();
-});
 
 app.use("/", routes);
 
 const PORT = process.env.PORT || 3000;
+<<<<<<< HEAD
 app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
 
 app.post(
@@ -72,3 +97,6 @@ app.post(
     failureMessage: true,
   }),
 );
+=======
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+>>>>>>> 509cdd9adfc726bf0b6cc6758d5dee5d4bcfcdb9
