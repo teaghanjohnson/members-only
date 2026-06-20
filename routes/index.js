@@ -16,13 +16,11 @@ router.post("/sign-up", async (req, res, next) => {
       return res.render("signup", { error: "Username already taken." });
     }
     const hashedPassword = await genPassword(req.body.password);
-    const isAdmin = req.body.admin === "yes";
     await db.createUser(
       req.body.first_name,
       req.body.last_name,
       req.body.username,
       hashedPassword,
-      isAdmin,
     );
     res.redirect("/log-in");
   } catch (error) {
@@ -38,8 +36,8 @@ router.post("/log-in", (req, res, next) => {
 
     req.logIn(user, (err) => {
       if (err) return next(err);
-      if (user.is_admin) return res.redirect("/admin");
-      return res.redirect("/member");
+      if (user.role === "admin") return res.redirect("/admin");
+      return res.redirect("/");
     });
   })(req, res, next);
 });
